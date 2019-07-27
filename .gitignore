@@ -1,6 +1,17 @@
 .gradle
 /build/
 
+## ForgeGradle
+/run
+
+#intellij
+/out
+/.idea
+/atlassian-ide-plugin.xml
+/*.ipr
+/*.iws
+/*.iml
+
 # Ignore Gradle GUI config
 gradle-app.setting
 
