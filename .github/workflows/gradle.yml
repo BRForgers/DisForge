@@ -18,3 +18,8 @@ jobs:
           chmod +x ./gradlew
           ./gradlew setupCiWorkspace
           ./gradlew shadowJar
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+        with:
+          name: DisForge
+          path: build/libs/
