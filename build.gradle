@@ -55,8 +55,7 @@ shadowJar {
     relocate 'org.apache', 'shaded.apache'
 }
 
-reobf { shadowJar { mappingType = "SEARGE" } }
-tasks.reobfShadowJar.mustRunAfter shadowJar
+reobf { shadowJar { } }
 
 processResources {
     // this will ensure that this task is redone when the versions change.
