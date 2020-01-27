@@ -4,6 +4,7 @@ import com.mashape.unirest.http.Unirest;
 import javafx.util.Pair;
 import me.jonatsp.disforge.Configuration;
 import me.jonatsp.disforge.DisForge;
+import me.jonatsp.disforge.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -13,12 +14,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import org.json.JSONObject;
 
-
 public class MinecraftEventListener {
 
     @SubscribeEvent
     public static void onServerChat(ServerChatEvent e){
-        Pair<String, String> convertedPair = DisForge.convertMentionsFromNames(e.getMessage());
+        Pair<String, String> convertedPair = Utils.convertMentionsFromNames(e.getMessage());
         JSONObject body = new JSONObject();
         body.put("username", e.getUsername());
         body.put("avatar_url", "https://mc-heads.net/avatar/" + e.getUsername());
