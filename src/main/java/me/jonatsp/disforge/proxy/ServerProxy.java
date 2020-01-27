@@ -5,9 +5,8 @@ import me.jonatsp.disforge.DisForge;
 import me.jonatsp.disforge.Utils;
 import me.jonatsp.disforge.event.DiscordEventListener;
 import me.jonatsp.disforge.event.MinecraftEventListener;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.api.AccountType;
+import net.dv8tion.jda.api.JDABuilder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -15,17 +14,14 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
-import org.apache.logging.log4j.Level;
 
 import javax.security.auth.login.LoginException;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ServerProxy extends CommonProxy{
-    private JDA jda;
+
     @Override
     public void init(FMLInitializationEvent e) {
         super.init(e);
@@ -38,22 +34,24 @@ public class ServerProxy extends CommonProxy{
         super.postInit(e);
 
         try {
-            jda = new JDABuilder(AccountType.BOT)
+            DisForge.jda = new JDABuilder(AccountType.BOT)
                     .setToken(Configuration.botToken)
-                    .addEventListener(new DiscordEventListener())
+                    .addEventListeners(new DiscordEventListener())
                     .build();
-            jda.awaitReady();
-            MinecraftEventListener.setJda(jda);
+            DisForge.jda.awaitReady();
+            DisForge.textChannel = DisForge.jda.getTextChannelById(Configuration.channelId);
         } catch (LoginException ex) {
             DisForge.logger.error("Unable to login!", ex);
         } catch (InterruptedException ex) {
             DisForge.logger.error(ex);
         }
+
+
     }
     @Override
     public void serverStarted(FMLServerStartedEvent e) {
         super.serverStarted(e);
-        jda.getTextChannelById(Configuration.channelId).sendMessage("**Server started!**").queue();
+        DisForge.jda.getTextChannelById(Configuration.channelId).sendMessage("**Server started!**").queue();
         Runnable updateTopic = () -> {
             MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
             Runtime runtime = Runtime.getRuntime();
@@ -68,7 +66,7 @@ public class ServerProxy extends CommonProxy{
                     + "\nOnline Players: " + server.getOnlinePlayerNames().length  + "/" + server.getMaxPlayers()
                     + "\nUptime: " + (System.currentTimeMillis() - DisForge.startedTime) / 1000 / 60 + " mins"
                     + "\nMemory: "+ using + "/" + free + "/" + max + " MBs using/free/max";
-            jda.getTextChannelById(Configuration.channelId).getManager().setTopic(topic).queue();
+            DisForge.jda.getTextChannelById(Configuration.channelId).getManager().setTopic(topic).queue();
         };
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         executor.scheduleAtFixedRate(updateTopic, 1, 5, TimeUnit.SECONDS);
@@ -77,6 +75,6 @@ public class ServerProxy extends CommonProxy{
     @Override
     public void serverStopped(FMLServerStoppedEvent e) {
         super.serverStopped(e);
-        jda.getTextChannelById(Configuration.channelId).sendMessage("**Server stopped!**").queue();
+        DisForge.jda.getTextChannelById(Configuration.channelId).sendMessage("**Server stopped!**").queue();
     }
 }

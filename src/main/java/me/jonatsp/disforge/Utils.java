@@ -10,6 +10,8 @@ import java.util.Map;
 
 public class Utils {
     public static TextFormatting getTextFormattingByColor(Color color){
+        if(color == null) return TextFormatting.BLUE;
+
         HashMap<TextFormatting, Color> mcColors = new HashMap<>();
         mcColors.put(TextFormatting.BLACK, new Color(0x000000));
         mcColors.put(TextFormatting.DARK_BLUE, new Color(0x0000AA));
