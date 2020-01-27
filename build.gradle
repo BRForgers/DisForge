@@ -17,7 +17,7 @@ plugins {
 
 apply plugin: "net.minecraftforge.gradle.forge"
 
-version = "1.12.2-2.0"
+version = "1.12.2-2.1"
 group = modGroup
 archivesBaseName = modBaseName
 compileJava.options.encoding = 'UTF-8'
@@ -38,12 +38,28 @@ dependencies {
     compile ("net.dv8tion:JDA:4.1.1_101") {
         exclude module: 'opus-java'
     }
+    compile "org.apache.logging.log4j:log4j-api:2.8.1"
 }
 
 shadowJar {
     classifier = "universal"
-    relocate 'org.slf4j', 'shaded.slf4j'
-    relocate 'org.apache', 'shaded.apache'
+    relocate 'okhttp3', 'shaded.okhttp'
+    relocate 'okio', 'shaded.okio'
+    relocate 'gnu', 'shaded.gnu'
+    relocate 'javax.annotation', 'shaded.javax.annotation'
+    relocate 'net.dv8tion', 'shaded.net.dv8tion'
+    relocate 'org.apache', 'shaded.org.apache'
+    relocate 'org.intellij', 'shaded.org.intellij'
+    relocate 'org.jetbrains', 'shaded.org.jetbrains'
+    relocate 'org.json', 'shaded.org.json'
+    relocate 'org.slf4j', 'shaded.org.slf4j'
+    relocate 'com.neovisionaries', 'shaded.com.neovisionaries'
+    relocate 'com.mashape', 'shaded.com.mashape'
+    relocate 'com.iwebpp', 'shaded.com.iwebpp'
+    relocate 'com.fasterxml', 'shaded.com.fasterxml'
+    exclude 'module-info.class'
+    exclude 'dummyThing'
+    exclude 'mozilla/public-suffix-list.txt'
 }
 
 reobf { shadowJar {} }

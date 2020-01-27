@@ -1,7 +1,6 @@
 package me.jonatsp.disforge.event;
 
 import com.mashape.unirest.http.Unirest;
-import javafx.util.Pair;
 import me.jonatsp.disforge.Configuration;
 import me.jonatsp.disforge.DisForge;
 import me.jonatsp.disforge.Utils;
@@ -18,18 +17,18 @@ public class MinecraftEventListener {
 
     @SubscribeEvent
     public static void onServerChat(ServerChatEvent e){
-        Pair<String, String> convertedPair = Utils.convertMentionsFromNames(e.getMessage());
+        String[] convertedPair = Utils.convertMentionsFromNames(e.getMessage());
         JSONObject body = new JSONObject();
         body.put("username", e.getUsername());
         body.put("avatar_url", "https://mc-heads.net/avatar/" + e.getUsername());
-        body.put("content", convertedPair.getKey());
+        body.put("content", convertedPair[0]);
         try {
             Unirest.post(Configuration.webhookURL).header("Content-Type", "application/json").body(body).asJsonAsync();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         JSONObject newComponent = new JSONObject(ITextComponent.Serializer.componentToJson(e.getComponent()));
-        newComponent.getJSONArray("with").getJSONObject(1).put("text", convertedPair.getValue());
+        newComponent.getJSONArray("with").getJSONObject(1).put("text", convertedPair[1]);
         e.setComponent(ITextComponent.Serializer.jsonToComponent(newComponent.toString()));
     }
 

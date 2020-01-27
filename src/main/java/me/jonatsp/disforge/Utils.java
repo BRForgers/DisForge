@@ -1,6 +1,5 @@
 package me.jonatsp.disforge;
 
-import javafx.util.Pair;
 import net.dv8tion.jda.api.entities.Member;
 import net.minecraft.util.text.TextFormatting;
 
@@ -12,9 +11,9 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    public static Pair<String, String> convertMentionsFromNames(String message) {
+    public static String[] convertMentionsFromNames(String message) {
 
-        if (!message.contains("@")) return new Pair<>(message, message);
+        if (!message.contains("@")) return new String[]{message, message};
 
         List<String> messageList = Arrays.asList(message.split("@[\\S]+"));
         if(messageList.size() == 0) {
@@ -48,7 +47,7 @@ public class Utils {
             discordString.append(messageList.get(x));
             mcString.append(messageList.get(x));
         }
-        return new Pair<>(discordString.toString(), mcString.toString());
+        return new String[]{discordString.toString(), mcString.toString()};
     }
 
     public static TextFormatting getTextFormattingByColor(Color color) {
